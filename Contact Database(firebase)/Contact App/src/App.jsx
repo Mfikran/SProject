@@ -2,8 +2,9 @@ import Navbar from "./components/Navbar";
 import { FiSearch } from "react-icons/fi";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { useEffect, useState } from "react";
-import {collection, getDoc, getDocs} from "firebase/firestore";
+import {collection,  getDocs} from "firebase/firestore";
 import { db } from "./config/firebase";
+import { HiOutlineUserCircle } from "react-icons/hi";
 
 const App = () => {
 
@@ -16,8 +17,13 @@ const App = () => {
 
         const contactsRef = collection (db, "contacts");
         const contactsSnapshot = await getDocs(contactsRef);
-        const contactsLists = contactsSnapshot.docs.map((doc) => doc.data());
-        console.log(contactsLists);
+        const contactsLists = contactsSnapshot.docs.map((doc) => {
+          return{
+            id: doc.id, 
+            ...doc.data(),
+          };
+        });
+        setContacts(contactsLists);
       } catch (error) {
         console.log(error);
       }
@@ -38,6 +44,11 @@ const App = () => {
         </div>
         <AiFillPlusCircle className=" cursor-pointer text-5xl text-white" />
       </div>
+      <div>
+        {contacts.map((contact) => (<div key={contact.id}>
+          <HiOutlineUserCircle />
+        </div>))}
+        </div>
     </div>
   );
 };
